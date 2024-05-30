@@ -64,7 +64,7 @@ class DailyPedometer2 {
     return _androidPedestrianController.stream;
   }
 
-  static HiveStorage get hiveStorage => HiveStorage();
+  static HiveStorage get hiveStorage => HiveStorage.instance;
 
   /// Returns the steps taken since last system boot.
   /// Events may come with a delay.
@@ -106,7 +106,7 @@ class DailyStepCount {
 
   DailyStepCount._(dynamic e) {
     final result = StepData.fromJson(e);
-    HiveStorage.saveDailySteps(stepData: result);
+    HiveStorage.instance.saveDailySteps(stepData: result);
     _stepData = result;
     _timeStamp = DateTime.now();
   }
