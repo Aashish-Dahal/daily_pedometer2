@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:io' show Platform;
 
+import 'package:daily_pedometer2/hive_storage.dart';
 import 'package:flutter/services.dart';
+import 'package:hive/hive.dart';
 
 const int _stopped = 0, _walking = 1;
 
@@ -102,14 +104,15 @@ class DailyStepCount {
 
   DailyStepCount._(dynamic e) {
     final result = StepData.fromJson(e);
+    HiveStorage.saveDailySteps(stepData: result);
     _stepData = result;
-
     _timeStamp = DateTime.now();
   }
 
   DateTime get timeStamp => _timeStamp;
 
   StepData get dailyStepData => _stepData;
+  HiveStorage get hiveStorage => HiveStorage();
 }
 
 /// A DTO for steps taken containing a detected step and its corresponding
@@ -141,18 +144,40 @@ class PedestrianStatus {
   String toString() => 'Status: $_status at ${_timeStamp.toIso8601String()}';
 }
 
+@HiveType(typeId: 0)
 class StepData {
-  int dailyStepCount;
-  final DateTime? saveDate;
+  @HiveField(0)
+  final int dailyStepCount;
+  @HiveField(1)
+  final DateTime date;
 
-  StepData({required this.dailyStepCount, this.saveDate});
+  StepData({required this.dailyStepCount, required this.date});
 
   factory StepData.fromJson(Map<dynamic, dynamic> json) {
     return StepData(
       dailyStepCount: json['daily_step_count'],
-      saveDate: json['save_date'] != null
+      date: json['save_date'] != null
           ? DateTime.fromMillisecondsSinceEpoch(json['save_date'])
-          : null,
+          : DateTime.now(),
     );
+  }
+}
+
+class StepDataAdapter extends TypeAdapter<StepData> {
+  @override
+  final int typeId = 0;
+
+  @override
+  StepData read(BinaryReader reader) {
+    final dailyStepCount = reader.readInt();
+    final dateMilliseconds = reader.readInt();
+    final date = DateTime.fromMillisecondsSinceEpoch(dateMilliseconds);
+    return StepData(dailyStepCount: dailyStepCount, date: date);
+  }
+
+  @override
+  void write(BinaryWriter writer, StepData obj) {
+    writer.writeInt(obj.dailyStepCount);
+    writer.writeInt(obj.date.millisecondsSinceEpoch);
   }
 }
