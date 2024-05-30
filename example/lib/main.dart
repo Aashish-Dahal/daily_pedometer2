@@ -1,9 +1,8 @@
+import 'dart:async';
 import 'dart:developer';
 
-import 'package:flutter/material.dart';
-import 'dart:async';
-
 import 'package:daily_pedometer2/daily_pedometer2.dart';
+import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 String formatDate(DateTime d) {
@@ -20,7 +19,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  late Stream<StepCount> _dailyStepCountStream;
+  late Stream<DailyStepCount> _dailyStepCountStream;
   late Stream<StepCount> _stepCountStream;
   late Stream<PedestrianStatus> _pedestrianStatusStream;
   String _status = '?', _steps = '?', _dailySteps = '?';
@@ -31,22 +30,19 @@ class _MyAppState extends State<MyApp> {
     initPlatformState();
   }
 
-  void onDailyStepCount(StepCount event) {
-    print(event);
+  void onDailyStepCount(DailyStepCount event) {
     setState(() {
-      _dailySteps = event.steps.toString();
+      _dailySteps = event.dailyStepData.dailyStepCount.toString();
     });
   }
 
   void onStepCount(StepCount event) {
-    print(event);
     setState(() {
       _steps = event.steps.toString();
     });
   }
 
   void onPedestrianStatusChanged(PedestrianStatus event) {
-    print(event);
     setState(() {
       _status = event.status;
     });
