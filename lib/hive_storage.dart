@@ -28,7 +28,6 @@ class HiveStorage {
     final isOpen = Hive.isBoxOpen("daily_steps");
     if (!isOpen) {
       dailyStepCountBox = await Hive.box("daily_steps");
-      print(dailyStepCountBox.values.toList()[0]);
       return dailyStepCountBox.get(date);
     } else {
       dailyStepCountBox = await Hive.openBox("daily_steps");
