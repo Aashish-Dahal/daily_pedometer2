@@ -1,5 +1,5 @@
 import 'package:daily_pedometer2/daily_pedometer2.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 
 class HiveStorage {
