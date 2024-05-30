@@ -64,6 +64,8 @@ class DailyPedometer2 {
     return _androidPedestrianController.stream;
   }
 
+  static HiveStorage get hiveStorage => HiveStorage();
+
   /// Returns the steps taken since last system boot.
   /// Events may come with a delay.
   static Stream<StepCount> get stepCountStream => _stepCountChannel
@@ -112,7 +114,6 @@ class DailyStepCount {
   DateTime get timeStamp => _timeStamp;
 
   StepData get dailyStepData => _stepData;
-  HiveStorage get hiveStorage => HiveStorage();
 }
 
 /// A DTO for steps taken containing a detected step and its corresponding
