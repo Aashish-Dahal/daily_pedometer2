@@ -51,7 +51,6 @@ class DailyStepCountHandler() : EventChannel.StreamHandler {
     private fun getDailyEventListener(events: EventChannel.EventSink): SensorEventListener? {
         return object : SensorEventListener {
             override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
-
             override fun onSensorChanged(event: SensorEvent?) {
                 if (event?.sensor?.type == Sensor.TYPE_STEP_COUNTER) {
                     val currentStepCount = event.values[0].toInt();
@@ -64,8 +63,14 @@ class DailyStepCountHandler() : EventChannel.StreamHandler {
                     dailyStepCount = currentStepCount - initialStepCount
                     // Save the updated step count
                     sharedPrefs.edit().putInt("dailyStepCount", dailyStepCount).apply();
+                    val savedDate = sharedPrefs.getLong("lastSavedDate", 0L);
+
+                    val result = mapOf(
+                        "daily_step_count" to dailyStepCount,
+                        "save_date" to savedDate
+                    )
                     Log.d("DailyStepCountHandler", "Current step count: $currentStepCount, Daily step count: $dailyStepCount")
-                    events!!.success(dailyStepCount)
+                    events!!.success(result)
                 }
             }
         }

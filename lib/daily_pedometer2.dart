@@ -1,7 +1,7 @@
 import 'dart:async';
+import 'dart:io' show Platform;
 
 import 'package:flutter/services.dart';
-import 'dart:io' show Platform;
 
 const int _stopped = 0, _walking = 1;
 
@@ -70,9 +70,10 @@ class DailyPedometer2 {
 
   /// Returns the daily steps.
   /// Events may come with a delay.
-  static Stream<StepCount> get dailyStepCountStream => _dailyStepCountChannel
-      .receiveBroadcastStream()
-      .map((event) => StepCount._(event));
+  static Stream<DailyStepCount> get dailyStepCountStream =>
+      _dailyStepCountChannel
+          .receiveBroadcastStream()
+          .map((event) => DailyStepCount._(event));
 }
 
 /// A DTO for steps taken containing the number of steps taken.
@@ -82,6 +83,7 @@ class StepCount {
 
   StepCount._(dynamic e) {
     _steps = e as int;
+
     _timeStamp = DateTime.now();
   }
 
@@ -92,6 +94,22 @@ class StepCount {
   @override
   String toString() =>
       'Steps taken: $_steps at ${_timeStamp.toIso8601String()}';
+}
+
+class DailyStepCount {
+  late DateTime _timeStamp;
+  late StepData _stepData;
+
+  DailyStepCount._(dynamic e) {
+    final result = StepData.fromJson(e);
+    _stepData = result;
+
+    _timeStamp = DateTime.now();
+  }
+
+  DateTime get timeStamp => _timeStamp;
+
+  StepData get dailyStepData => _stepData;
 }
 
 /// A DTO for steps taken containing a detected step and its corresponding
@@ -121,4 +139,20 @@ class PedestrianStatus {
 
   @override
   String toString() => 'Status: $_status at ${_timeStamp.toIso8601String()}';
+}
+
+class StepData {
+  int dailyStepCount;
+  final DateTime? saveDate;
+
+  StepData({required this.dailyStepCount, this.saveDate});
+
+  factory StepData.fromJson(Map<dynamic, dynamic> json) {
+    return StepData(
+      dailyStepCount: json['daily_step_count'],
+      saveDate: json['save_date'] != null
+          ? DateTime.fromMillisecondsSinceEpoch(json['save_date'])
+          : null,
+    );
+  }
 }
