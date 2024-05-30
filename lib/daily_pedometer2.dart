@@ -145,7 +145,7 @@ class PedestrianStatus {
   String toString() => 'Status: $_status at ${_timeStamp.toIso8601String()}';
 }
 
-@HiveType(typeId: 0)
+@HiveType(typeId: 7)
 class StepData {
   @HiveField(0)
   final int dailyStepCount;
@@ -166,7 +166,7 @@ class StepData {
 
 class StepDataAdapter extends TypeAdapter<StepData> {
   @override
-  final int typeId = 0;
+  final int typeId = 7;
 
   @override
   StepData read(BinaryReader reader) {
