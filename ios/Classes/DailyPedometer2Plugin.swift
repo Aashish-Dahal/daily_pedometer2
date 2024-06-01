@@ -132,13 +132,14 @@ public class DailyStepCounter: NSObject, FlutterStreamHandler {
     private var running = false
     private var eventSink: FlutterEventSink?
 
-    private func handleEvent(count: Int) {
+    // Update handleEvent to take a dictionary
+    private func handleEvent(result: [String: Any]) {
         // If no eventSink to emit events to, do nothing (wait)
         if (eventSink == nil) {
             return
         }
         // Emit step count event to Flutter
-        eventSink!(count)
+        eventSink!(result)
     }
 
     public func onListen(withArguments arguments: Any?, eventSink: @escaping FlutterEventSink) -> FlutterError? {
@@ -146,16 +147,18 @@ public class DailyStepCounter: NSObject, FlutterStreamHandler {
         if #available(iOS 10.0, *) {
             if (!CMPedometer.isStepCountingAvailable()) {
                 eventSink(FlutterError(code: "3", message: "Step Count is not available", details: nil))
-            }
-            else if (!running) {
-                    let dateOfTodayMidnight = Calendar.current.startOfDay(for: Date())
-                    running = true
-                pedometer.startUpdates(from: dateOfTodayMidnight) {
-                    pedometerData, error in
+            } else if (!running) {
+                let dateOfTodayMidnight = Calendar.current.startOfDay(for: Date())
+                running = true
+                pedometer.startUpdates(from: dateOfTodayMidnight) { pedometerData, error in
                     guard let pedometerData = pedometerData, error == nil else { return }
 
                     DispatchQueue.main.async {
-                        self.handleEvent(count: pedometerData.numberOfSteps.intValue)
+                        let result: [String: Any] = [
+                            "daily_step_count": pedometerData.numberOfSteps.intValue,
+                            "save_date": Int(dateOfTodayMidnight.timeIntervalSince1970 * 1000)
+                        ]
+                        self.handleEvent(result: result)
                     }
                 }
             }
@@ -176,3 +179,4 @@ public class DailyStepCounter: NSObject, FlutterStreamHandler {
         return nil
     }
 }
+
