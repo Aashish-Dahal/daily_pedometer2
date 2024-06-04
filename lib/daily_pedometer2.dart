@@ -106,7 +106,7 @@ class DailyStepCount {
 
   DailyStepCount._(dynamic e) {
     final result = StepData.fromJson(e);
-    HiveStorage.instance.saveDailySteps(stepData: result);
+    //HiveStorage.instance.saveDailySteps(stepData: result);
     _stepData = result;
     _timeStamp = DateTime.now();
   }
