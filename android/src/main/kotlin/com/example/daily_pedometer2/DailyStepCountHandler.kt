@@ -79,8 +79,17 @@ class DailyStepCountHandler() : EventChannel.StreamHandler {
     private fun isDifferentDay(savedDate: Long): Boolean {
         val savedCalendar = Calendar.getInstance().apply { timeInMillis = savedDate }
         val currentCalendar = Calendar.getInstance()
+                    // Set the current calendar to 3:05 PM today
+    val threeOhFivePM = Calendar.getInstance().apply {
+        set(Calendar.HOUR_OF_DAY, 19)
+        set(Calendar.MINUTE, 12)
+        set(Calendar.SECOND, 0)
+        set(Calendar.MILLISECOND, 0)
+    }
+
+
         return savedCalendar.get(Calendar.DAY_OF_YEAR) != currentCalendar.get(Calendar.DAY_OF_YEAR) ||
-                savedCalendar.get(Calendar.YEAR) != currentCalendar.get(Calendar.YEAR) 
+                savedCalendar.get(Calendar.YEAR) != currentCalendar.get(Calendar.YEAR) || currentCalendar.after(threeOhFivePM)
     }
     private fun resetStepCount() {
  // Reset step count at the start of a new day
