@@ -61,10 +61,10 @@ class DailyStepCountHandler() : EventChannel.StreamHandler {
                         Log.d("DailyStepCountHandler", "Initial step count set to: $initialStepCount")
                     }
                     dailyStepCount = currentStepCount - initialStepCount
+
                     // Save the updated step count
                     sharedPrefs.edit().putInt("dailyStepCount", dailyStepCount).apply();
-                    val savedDate = sharedPrefs.getLong("lastSavedDate", 0L);
-
+                    val savedDate = sharedPrefs.getLong("lastSavedDate", 0L)
                     val result = mapOf(
                         "daily_step_count" to dailyStepCount,
                         "save_date" to savedDate
@@ -79,8 +79,15 @@ class DailyStepCountHandler() : EventChannel.StreamHandler {
     private fun isDifferentDay(savedDate: Long): Boolean {
         val savedCalendar = Calendar.getInstance().apply { timeInMillis = savedDate }
         val currentCalendar = Calendar.getInstance()
+            // Set the current calendar to 3:05 PM today
+    val threeOhFivePM = Calendar.getInstance().apply {
+        set(Calendar.HOUR_OF_DAY, 15)
+        set(Calendar.MINUTE, 15)
+        set(Calendar.SECOND, 0)
+        set(Calendar.MILLISECOND, 0)
+    }
         return savedCalendar.get(Calendar.DAY_OF_YEAR) != currentCalendar.get(Calendar.DAY_OF_YEAR) ||
-                savedCalendar.get(Calendar.YEAR) != currentCalendar.get(Calendar.YEAR)
+                savedCalendar.get(Calendar.YEAR) != currentCalendar.get(Calendar.YEAR) || currentCalendar.after(threeOhFivePM)
     }
 
     override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
