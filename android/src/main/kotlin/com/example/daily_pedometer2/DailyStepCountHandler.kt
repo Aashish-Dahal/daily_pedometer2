@@ -51,9 +51,9 @@ class DailyStepCountHandler() : EventChannel.StreamHandler {
             override fun onSensorChanged(event: SensorEvent?) {
                 if (event?.sensor?.type == Sensor.TYPE_STEP_COUNTER) {
                     val currentStepCount = event.values[0].toInt();
-                    if (isDifferentDay(sharedPrefs.getLong("lastSavedDate", 0L))) {
-                        resetStepCount()
-                    }
+                    // if (isDifferentDay(sharedPrefs.getLong("lastSavedDate", 0L))) {
+                    //     resetStepCount()
+                    // }
                     if (initialStepCount == -1) {
                         initialStepCount = currentStepCount
                         // Save the initial step count
@@ -79,8 +79,14 @@ class DailyStepCountHandler() : EventChannel.StreamHandler {
     private fun isDifferentDay(savedDate: Long): Boolean {
         val savedCalendar = Calendar.getInstance().apply { timeInMillis = savedDate }
         val currentCalendar = Calendar.getInstance()
+        val threeOhFivePM = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, 12)
+            set(Calendar.MINUTE, 42)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }
         return savedCalendar.get(Calendar.DAY_OF_YEAR) != currentCalendar.get(Calendar.DAY_OF_YEAR) ||
-                savedCalendar.get(Calendar.YEAR) != currentCalendar.get(Calendar.YEAR) 
+                savedCalendar.get(Calendar.YEAR) != currentCalendar.get(Calendar.YEAR) || currentCalendar.after(threeOhFivePM)
     }
     private fun resetStepCount() {
  // Reset step count at the start of a new day
