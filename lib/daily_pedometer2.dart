@@ -6,6 +6,17 @@ import 'package:flutter/services.dart';
 const int _stopped = 0, _walking = 1;
 
 class DailyPedometer2 {
+  static DailyPedometer2? _instance;
+
+  DailyPedometer2._internal();
+
+  factory DailyPedometer2() {
+    if (_instance == null) {
+      _instance = DailyPedometer2._internal();
+    }
+    return _instance!;
+  }
+
   static const EventChannel _stepDetectionChannel =
       const EventChannel('step_detection');
   static const EventChannel _stepCountChannel =
@@ -13,12 +24,12 @@ class DailyPedometer2 {
   static const EventChannel _dailyStepCountChannel =
       const EventChannel('daily_step_count');
 
-  static StreamController<PedestrianStatus> _androidPedestrianController =
+  StreamController<PedestrianStatus> _androidPedestrianController =
       StreamController.broadcast();
 
   /// Returns one step at a time.
   /// Events come every time a step is detected.
-  static Stream<PedestrianStatus> get pedestrianStatusStream {
+  Stream<PedestrianStatus> get pedestrianStatusStream {
     Stream<PedestrianStatus> stream = _stepDetectionChannel
         .receiveBroadcastStream()
         .map((event) => PedestrianStatus._(event));
@@ -27,8 +38,7 @@ class DailyPedometer2 {
   }
 
   /// Transformed stream for the Android platform
-  static Stream<PedestrianStatus> _androidStream(
-      Stream<PedestrianStatus> stream) {
+  Stream<PedestrianStatus> _androidStream(Stream<PedestrianStatus> stream) {
     /// Init a timer and a status
     Timer? t;
     int? pedestrianStatus;
@@ -64,16 +74,20 @@ class DailyPedometer2 {
 
   /// Returns the steps taken since last system boot.
   /// Events may come with a delay.
-  static Stream<StepCount> get stepCountStream => _stepCountChannel
+  Stream<StepCount> get stepCountStream => _stepCountChannel
       .receiveBroadcastStream()
       .map((event) => StepCount._(event));
 
   /// Returns the daily steps.
   /// Events may come with a delay.
-  static Stream<DailyStepCount> get dailyStepCountStream =>
-      _dailyStepCountChannel
-          .receiveBroadcastStream()
-          .map((event) => DailyStepCount._(event));
+  Stream<DailyStepCount> get dailyStepCountStream => _dailyStepCountChannel
+      .receiveBroadcastStream()
+      .map((event) => DailyStepCount._(event));
+
+  static void restart() {
+    _instance = null;
+    _instance = DailyPedometer2._internal();
+  }
 }
 
 /// A DTO for steps taken containing the number of steps taken.
