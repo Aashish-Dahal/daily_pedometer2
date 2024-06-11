@@ -80,7 +80,7 @@ class DailyStepCountHandler() : EventChannel.StreamHandler {
         val savedCalendar = Calendar.getInstance().apply { timeInMillis = savedDate }
         val currentCalendar = Calendar.getInstance()
         return savedCalendar.get(Calendar.DAY_OF_YEAR) != currentCalendar.get(Calendar.DAY_OF_YEAR) ||
-                savedCalendar.get(Calendar.YEAR) != currentCalendar.get(Calendar.YEAR) || currentCalendar.after(threeOhFivePM)
+                savedCalendar.get(Calendar.YEAR) != currentCalendar.get(Calendar.YEAR) 
     }
     private fun resetStepCount() {
  // Reset step count at the start of a new day
