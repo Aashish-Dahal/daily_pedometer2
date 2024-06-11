@@ -80,8 +80,8 @@ class DailyStepCountHandler() : EventChannel.StreamHandler {
         val savedCalendar = Calendar.getInstance().apply { timeInMillis = savedDate }
         val currentCalendar = Calendar.getInstance()
         val threeOhFivePM = Calendar.getInstance().apply {
-            set(Calendar.HOUR_OF_DAY, 12)
-            set(Calendar.MINUTE, 42)
+            set(Calendar.HOUR_OF_DAY, 13)
+            set(Calendar.MINUTE, 5)
             set(Calendar.SECOND, 0)
             set(Calendar.MILLISECOND, 0)
         }
