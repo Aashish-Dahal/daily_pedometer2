@@ -154,4 +154,6 @@ class StepData {
           : DateTime.now(),
     );
   }
+  Map<String, dynamic> toJson() =>
+      {'daily_step_count': dailyStepCount, 'save_date': date};
 }
