@@ -89,7 +89,7 @@ class DailyStepCountHandler() : EventChannel.StreamHandler {
         val currentCalendar = Calendar.getInstance()
 
         return savedCalendar.get(Calendar.DAY_OF_YEAR) != currentCalendar.get(Calendar.DAY_OF_YEAR) ||
-                savedCalendar.get(Calendar.YEAR) != currentCalendar.get(Calendar.YEAR) || (currentCalendar.get(Calendar.HOUR_OF_DAY) == 16 && currentCalendar.get(Calendar.MINUTE) == 48)
+                savedCalendar.get(Calendar.YEAR) != currentCalendar.get(Calendar.YEAR) || (currentCalendar.get(Calendar.HOUR_OF_DAY) == 17 && currentCalendar.get(Calendar.MINUTE) == 58)
     //    // Get the current hour and minute in 12-hour format with AM/PM
     //     int hour = currentCalendar.get(Calendar.HOUR);
     //     int minute = currentCalendar.get(Calendar.MINUTE);
