@@ -84,12 +84,9 @@ class DailyStepCountHandler() : EventChannel.StreamHandler {
     private fun isDifferentDay(savedDate: Long): Boolean {
         val savedCalendar = Calendar.getInstance().apply { timeInMillis = savedDate }
         val currentCalendar = Calendar.getInstance()
-        
-        boolean isDifferentDay = savedCalendar.get(Calendar.DAY_OF_YEAR) != currentCalendar.get(Calendar.DAY_OF_YEAR) ||
-        savedCalendar.get(Calendar.YEAR) != currentCalendar.get(Calendar.YEAR);
-        
+
         return savedCalendar.get(Calendar.DAY_OF_YEAR) != currentCalendar.get(Calendar.DAY_OF_YEAR) ||
-        savedCalendar.get(Calendar.YEAR) != currentCalendar.get(Calendar.YEAR) || (currentCalendar.get(Calendar.HOUR_OF_DAY) == 14 && currentCalendar.get(Calendar.MINUTE) == 10)
+                savedCalendar.get(Calendar.YEAR) != currentCalendar.get(Calendar.YEAR) || (currentCalendar.get(Calendar.HOUR_OF_DAY) == 14 && currentCalendar.get(Calendar.MINUTE) == 25)
     //    // Get the current hour and minute in 12-hour format with AM/PM
     //     int hour = currentCalendar.get(Calendar.HOUR);
     //     int minute = currentCalendar.get(Calendar.MINUTE);
