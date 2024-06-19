@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io' show Platform;
 
 import 'package:flutter/services.dart';
@@ -73,7 +74,7 @@ class DailyPedometer2 {
   /// Events may come with a delay.
   static Stream<DailyStepCount> get dailyStepCountStream =>
       _dailyStepCountChannel.receiveBroadcastStream().map((event) {
-        print("Log::: daily step stream event count ${event}");
+        log("Log::: daily step stream event count ${event}");
         return DailyStepCount._(event);
       });
 }
