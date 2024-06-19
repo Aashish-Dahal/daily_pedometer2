@@ -66,16 +66,16 @@ class DailyPedometer2 {
   /// Events may come with a delay.
   static Stream<StepCount> get stepCountStream =>
       _stepCountChannel.receiveBroadcastStream().map((event) {
-        print("Log::: step stream event count ${event}");
         return StepCount._(event);
       });
 
   /// Returns the daily steps.
   /// Events may come with a delay.
   static Stream<DailyStepCount> get dailyStepCountStream =>
-      _dailyStepCountChannel
-          .receiveBroadcastStream()
-          .map((event) => DailyStepCount._(event));
+      _dailyStepCountChannel.receiveBroadcastStream().map((event) {
+        print("Log::: daily step stream event count ${event}");
+        return DailyStepCount._(event);
+      });
 }
 
 /// A DTO for steps taken containing the number of steps taken.
