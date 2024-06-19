@@ -72,6 +72,7 @@ class DailyStepCountHandler() : EventChannel.StreamHandler {
                         "daily_step_count" to dailyStepCount,
                         "save_date" to savedDate
                     )
+                    Log.d("DailyStepCountHandler", "Saved step count: $result")
                     Log.d("DailyStepCountHandler", "Current step count: $currentStepCount, Daily step count: $dailyStepCount")
                     events!!.success(result)
                 }
