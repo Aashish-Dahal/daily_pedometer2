@@ -64,9 +64,11 @@ class DailyPedometer2 {
 
   /// Returns the steps taken since last system boot.
   /// Events may come with a delay.
-  static Stream<StepCount> get stepCountStream => _stepCountChannel
-      .receiveBroadcastStream()
-      .map((event) => StepCount._(event));
+  static Stream<StepCount> get stepCountStream =>
+      _stepCountChannel.receiveBroadcastStream().map((event) {
+        print("Log::: step stream event count ${event}");
+        return StepCount._(event);
+      });
 
   /// Returns the daily steps.
   /// Events may come with a delay.
