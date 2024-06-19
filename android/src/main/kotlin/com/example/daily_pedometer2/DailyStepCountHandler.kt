@@ -87,15 +87,18 @@ class DailyStepCountHandler() : EventChannel.StreamHandler {
         
         boolean isDifferentDay = savedCalendar.get(Calendar.DAY_OF_YEAR) != currentCalendar.get(Calendar.DAY_OF_YEAR) ||
         savedCalendar.get(Calendar.YEAR) != currentCalendar.get(Calendar.YEAR);
-       // Get the current hour and minute in 12-hour format with AM/PM
-        int hour = currentCalendar.get(Calendar.HOUR);
-        int minute = currentCalendar.get(Calendar.MINUTE);
-        int second = currentCalendar.get(Calendar.SECOND);
-        String amPm = currentCalendar.get(Calendar.AM_PM) == Calendar.AM ? "AM" : "PM";
+        
+        return savedCalendar.get(Calendar.DAY_OF_YEAR) != currentCalendar.get(Calendar.DAY_OF_YEAR) ||
+        savedCalendar.get(Calendar.YEAR) != currentCalendar.get(Calendar.YEAR) || (currentCalendar.get(Calendar.HOUR_OF_DAY) == 14 && currentCalendar.get(Calendar.MINUTE) == 10)
+    //    // Get the current hour and minute in 12-hour format with AM/PM
+    //     int hour = currentCalendar.get(Calendar.HOUR);
+    //     int minute = currentCalendar.get(Calendar.MINUTE);
+    //     int second = currentCalendar.get(Calendar.SECOND);
+    //     String amPm = currentCalendar.get(Calendar.AM_PM) == Calendar.AM ? "AM" : "PM";
 
-       // Check if the time is exactly 12:00:00 AM
-        boolean isMidnight = (hour == 0 && minute == 0 && second == 0 && amPm.equals("AM"));   
-        return isDifferentDay || isMidnight;
+    //    // Check if the time is exactly 12:00:00 AM
+    //     boolean isMidnight = (hour == 0 && minute == 0 && second == 0 && amPm.equals("AM"));   
+    //     return isDifferentDay || isMidnight;
         }
     private fun resetStepCount() {
  // Reset step count at the start of a new day
