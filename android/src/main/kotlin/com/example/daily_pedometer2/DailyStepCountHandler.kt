@@ -118,6 +118,7 @@ class DailyStepCountHandler() : EventChannel.StreamHandler {
             sensorEventListener = getDailyEventListener(events!!);
             sensorManager!!.registerListener(sensorEventListener, stepCounterSensor, SensorManager.SENSOR_DELAY_FASTEST);
             Log.d("DailyStepCountHandler", "Sensor listener registered")
+        }
       
     }
 
