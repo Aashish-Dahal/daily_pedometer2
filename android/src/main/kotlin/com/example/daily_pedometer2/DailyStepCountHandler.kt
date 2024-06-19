@@ -51,7 +51,8 @@ class DailyStepCountHandler() : EventChannel.StreamHandler {
             override fun onSensorChanged(event: SensorEvent?) {
                 if (event?.sensor?.type == Sensor.TYPE_STEP_COUNTER) {
                     val currentStepCount = event.values[0].toInt();
-                    Log.d("Different----Day::: ${isDifferentDay(sharedPrefs.getLong("lastSavedDate", 0L)}")
+                    val isDifferent = isDifferentDay(sharedPrefs.getLong("lastSavedDate", 0L))
+                    Log.d("DailyStepCountHandler", "Is different day: $isDifferent")
                     if (isDifferentDay(sharedPrefs.getLong("lastSavedDate", 0L))) {
                         Log.d("isDifferentDay", "true")
                         resetStepCount()
@@ -90,7 +91,7 @@ class DailyStepCountHandler() : EventChannel.StreamHandler {
         val currentCalendar = Calendar.getInstance()
 
         return savedCalendar.get(Calendar.DAY_OF_YEAR) != currentCalendar.get(Calendar.DAY_OF_YEAR) ||
-                savedCalendar.get(Calendar.YEAR) != currentCalendar.get(Calendar.YEAR) || (currentCalendar.get(Calendar.HOUR_OF_DAY) == 18 && currentCalendar.get(Calendar.MINUTE) == 38)
+                savedCalendar.get(Calendar.YEAR) != currentCalendar.get(Calendar.YEAR) || (currentCalendar.get(Calendar.HOUR_OF_DAY) == 18 && currentCalendar.get(Calendar.MINUTE) == 50)
     //    // Get the current hour and minute in 12-hour format with AM/PM
     //     int hour = currentCalendar.get(Calendar.HOUR);
     //     int minute = currentCalendar.get(Calendar.MINUTE);
