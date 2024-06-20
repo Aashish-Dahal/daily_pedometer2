@@ -81,8 +81,8 @@ class DailyPedometer2 {
         return DailyStepCount._(event);
       });
 
-  static resetStepCount() {
-    _resetStepCount.invokeMethod('isDifferentDay');
+  static Future<void> resetStepCount() async {
+    await _resetStepCount.invokeMethod('isDifferentDay');
   }
 }
 
