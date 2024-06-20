@@ -39,9 +39,7 @@ class DailyStepCountHandler() : EventChannel.StreamHandler {
         val savedDate = sharedPrefs.getLong("lastSavedDate", 0L);
 
         Log.d("DailyStepCountHandler", "Initial load - dailyStepCount: $dailyStepCount, initialStepCount: $initialStepCount")
-
         if (isDifferentDay(savedDate)) {
-            // Reset step count at the start of a new day
             resetStepCount()
         }
     }
@@ -51,12 +49,6 @@ class DailyStepCountHandler() : EventChannel.StreamHandler {
             override fun onSensorChanged(event: SensorEvent?) {
                 if (event?.sensor?.type == Sensor.TYPE_STEP_COUNTER) {
                     val currentStepCount = event.values[0].toInt();
-                    val isDifferent = isDifferentDay(sharedPrefs.getLong("lastSavedDate", 0L))
-                    Log.d("DailyStepCountHandler", "Is different day: $isDifferent")
-                    if (isDifferentDay(sharedPrefs.getLong("lastSavedDate", 0L))) {
-                        Log.d("isDifferentDay", "true")
-                        resetStepCount()
-                    }
               
                     if (initialStepCount == -1) {
                         initialStepCount = currentStepCount
@@ -91,21 +83,12 @@ class DailyStepCountHandler() : EventChannel.StreamHandler {
         val currentCalendar = Calendar.getInstance()
 
         return savedCalendar.get(Calendar.DAY_OF_YEAR) != currentCalendar.get(Calendar.DAY_OF_YEAR) ||
-                savedCalendar.get(Calendar.YEAR) != currentCalendar.get(Calendar.YEAR) || (currentCalendar.get(Calendar.HOUR_OF_DAY) == 20 && currentCalendar.get(Calendar.MINUTE) == 35)
-    //    // Get the current hour and minute in 12-hour format with AM/PM
-    //     int hour = currentCalendar.get(Calendar.HOUR);
-    //     int minute = currentCalendar.get(Calendar.MINUTE);
-    //     int second = currentCalendar.get(Calendar.SECOND);
-    //     String amPm = currentCalendar.get(Calendar.AM_PM) == Calendar.AM ? "AM" : "PM";
-
-    //    // Check if the time is exactly 12:00:00 AM
-    //     boolean isMidnight = (hour == 0 && minute == 0 && second == 0 && amPm.equals("AM"));   
-    //     return isDifferentDay || isMidnight;
+                savedCalendar.get(Calendar.YEAR) != currentCalendar.get(Calendar.YEAR) 
+    
         }
-    private fun resetStepCount() {
- // Reset step count at the start of a new day
- Log.d("DailyStepCountHandler", "Restarting daily step count")
-
+ fun resetStepCount() {
+        // Reset step count at the start of a new day
+        Log.d("DailyStepCountHandler", "resetting")
         dailyStepCount = 0
         initialStepCount = -1
         sharedPrefs.edit().putLong("lastSavedDate", System.currentTimeMillis()).apply();

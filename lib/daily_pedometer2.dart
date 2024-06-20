@@ -7,6 +7,9 @@ import 'package:flutter/services.dart';
 const int _stopped = 0, _walking = 1;
 
 class DailyPedometer2 {
+  static const MethodChannel _resetStepCount =
+      const MethodChannel("reset_step_count");
+
   static const EventChannel _stepDetectionChannel =
       const EventChannel('step_detection');
   static const EventChannel _stepCountChannel =
@@ -77,6 +80,10 @@ class DailyPedometer2 {
         log("Log::: daily step stream event count ${event}");
         return DailyStepCount._(event);
       });
+
+  static resetStepCount() {
+    _resetStepCount.invokeMethod('isDifferentDay');
+  }
 }
 
 /// A DTO for steps taken containing the number of steps taken.
