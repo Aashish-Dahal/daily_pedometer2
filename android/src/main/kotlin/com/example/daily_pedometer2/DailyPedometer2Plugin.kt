@@ -36,7 +36,20 @@ class DailyPedometer2Plugin : FlutterPlugin {
             Log.d("Method channel", "isDifferentDay")
             if (call.method == "isDifferentDay") {
                 dailyStepCountHandler.resetStepCount()
+                reinitializeStreams()
             } 
+        }
+
+        private fun reinitializeStreams() {
+            /// Reset the handlers
+            stepDetectionChannel.setStreamHandler(null)
+            stepCountChannel.setStreamHandler(null)
+            dailyStepCountChannel.setStreamHandler(null)
+            
+            /// Reattach the handlers to the channels
+            stepDetectionChannel.setStreamHandler(stepDetectionHandler)
+            stepCountChannel.setStreamHandler(stepCountHandler)
+            dailyStepCountChannel.setStreamHandler(dailyStepCountHandler)
         }
 
         /// Set handlers
