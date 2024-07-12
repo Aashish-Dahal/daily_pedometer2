@@ -71,10 +71,9 @@ class DailyPedometer2 {
         return StepCount._(event);
       });
 
-  static Future<void> resetStepCount() async {
-    await _resetStepCount.invokeMethod('isDifferentDay').then((value) {
-      print("Resetting Streams");
-    });
+  static Future<bool> resetStepCount() async {
+    final status = await _resetStepCount.invokeMethod('isDifferentDay');
+    return status ?? false;
   }
 
   /// Returns the daily steps.
