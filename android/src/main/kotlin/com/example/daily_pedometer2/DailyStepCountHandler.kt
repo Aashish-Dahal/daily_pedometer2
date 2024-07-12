@@ -86,14 +86,20 @@ class DailyStepCountHandler() : EventChannel.StreamHandler {
                 savedCalendar.get(Calendar.YEAR) != currentCalendar.get(Calendar.YEAR) 
     
         }
- fun resetStepCount(): Boolean {
+ fun resetStepCount(): Map<String, Any> {
         // Reset step count at the start of a new day
         Log.d("DailyStepCountHandler", "resetting")
         dailyStepCount = 0
         initialStepCount = -1
         sharedPrefs.edit().putLong("lastSavedDate", System.currentTimeMillis()).apply();
         Log.d("DailyStepCountHandler", "New day - dailyStepCount reset to: $dailyStepCount, initialStepCount reset to: $initialStepCount")
-        return true;
+        val savedDate = sharedPrefs.getLong("lastSavedDate", 0L)
+        final status= mapOf(
+                        "daily_step_count" to dailyStepCount,
+                        "save_date" to savedDate
+                        "status" to true
+                    )
+        return status;
     }
 
 
