@@ -94,7 +94,7 @@ class DailyStepCountHandler() : EventChannel.StreamHandler {
         sharedPrefs.edit().putLong("lastSavedDate", System.currentTimeMillis()).apply();
         Log.d("DailyStepCountHandler", "New day - dailyStepCount reset to: $dailyStepCount, initialStepCount reset to: $initialStepCount")
         val savedDate = sharedPrefs.getLong("lastSavedDate", 0L)
-        final status= mapOf(
+      val status= mapOf(
                         "daily_step_count" to dailyStepCount,
                         "save_date" to savedDate,
                         "status" to true
