@@ -96,7 +96,7 @@ class DailyStepCountHandler() : EventChannel.StreamHandler {
         val savedDate = sharedPrefs.getLong("lastSavedDate", 0L)
         final status= mapOf(
                         "daily_step_count" to dailyStepCount,
-                        "save_date" to savedDate
+                        "save_date" to savedDate,
                         "status" to true
                     )
         return status;
