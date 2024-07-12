@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'dart:io' show Platform;
 
 import 'package:flutter/services.dart';
@@ -9,7 +8,6 @@ const int _stopped = 0, _walking = 1;
 class DailyPedometer2 {
   static const MethodChannel _resetStepCount =
       const MethodChannel("reset_step_count");
-
   static const EventChannel _stepDetectionChannel =
       const EventChannel('step_detection');
   static const EventChannel _stepCountChannel =
@@ -73,16 +71,18 @@ class DailyPedometer2 {
         return StepCount._(event);
       });
 
+  static Future<void> resetStepCount() async {
+    await _resetStepCount.invokeMethod('isDifferentDay').then((value) {
+      print("Resetting Streams");
+    });
+  }
+
   /// Returns the daily steps.
   /// Events may come with a delay.
-  static Stream<DailyStepCount> get dailyStepCountStream =>
-      _dailyStepCountChannel.receiveBroadcastStream().map((event) {
-        log("Log::: daily step stream event count ${event}");
-        return DailyStepCount._(event);
-      });
-
-  static Future<void> resetStepCount() async {
-    await _resetStepCount.invokeMethod('isDifferentDay');
+  static Stream<DailyStepCount> get dailyStepCountStream {
+    return _dailyStepCountChannel.receiveBroadcastStream().map((event) {
+      return DailyStepCount._(event);
+    });
   }
 }
 
