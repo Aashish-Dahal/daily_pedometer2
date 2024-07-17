@@ -13,6 +13,8 @@ import io.flutter.plugin.common.EventChannel
 import android.os.Handler
 import java.util.Calendar
 import android.util.Log
+import java.util.Date
+
 
 class DailyStepCountHandler() : EventChannel.StreamHandler {
 
