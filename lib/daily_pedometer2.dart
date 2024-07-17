@@ -80,8 +80,6 @@ class DailyPedometer2 {
   /// Events may come with a delay.
   static Stream<DailyStepCount> get dailyStepCountStream {
     return _dailyStepCountChannel.receiveBroadcastStream().map((event) {
-      final result = StepData.fromJson(event);
-      print("Receiver Result Data: ${result.toJson()}");
       return DailyStepCount._(event);
     });
   }
