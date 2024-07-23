@@ -14,10 +14,10 @@ class DailyPedometer2 {
       const EventChannel('step_count');
   static const EventChannel _dailyStepCountChannel =
       const EventChannel('daily_step_count');
+  static StreamSubscription? _streamSubscription;
 
   static StreamController<PedestrianStatus> _androidPedestrianController =
       StreamController.broadcast();
-  static StreamSubscription? _dailyStepCount;
 
   /// Returns one step at a time.
   /// Events come every time a step is detected.
@@ -73,26 +73,21 @@ class DailyPedometer2 {
       });
 
   static Future<Map> resetStepCount() async {
+    _streamSubscription?.cancel();
     final status = await _resetStepCount.invokeMethod('isDifferentDay');
     return status ?? {};
-  }
-
-  static StreamSubscription<dynamic>? get dailyStepCount {
-    _dailyStepCount =
-        _dailyStepCountChannel.receiveBroadcastStream().listen((event) {});
-    return _dailyStepCount;
-  }
-
-  static void close() {
-    _dailyStepCount?.cancel();
   }
 
   /// Returns the daily steps.
   /// Events may come with a delay.
   static Stream<DailyStepCount> get dailyStepCountStream {
-    return _dailyStepCountChannel.receiveBroadcastStream().map((event) {
-      return DailyStepCount._(event);
+    final stream = _dailyStepCountChannel
+        .receiveBroadcastStream()
+        .map((event) => DailyStepCount._(event));
+    _streamSubscription = stream.listen((event) {
+      print("Debug $event");
     });
+    return stream;
   }
 }
 
