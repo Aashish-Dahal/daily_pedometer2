@@ -84,8 +84,8 @@ class DailyPedometer2 {
     final stream = _dailyStepCountChannel
         .receiveBroadcastStream()
         .map((event) => DailyStepCount._(event));
-    _streamSubscription = stream.listen((event) {
-      print("Debug $event");
+    _streamSubscription = stream.listen((e) {
+      print("Debug ${e.dailyStepData.toJson()}");
     });
     return stream;
   }
