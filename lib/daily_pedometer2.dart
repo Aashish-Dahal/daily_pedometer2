@@ -17,6 +17,7 @@ class DailyPedometer2 {
 
   static StreamController<PedestrianStatus> _androidPedestrianController =
       StreamController.broadcast();
+  static StreamSubscription? _dailyStepCount;
 
   /// Returns one step at a time.
   /// Events come every time a step is detected.
@@ -74,6 +75,16 @@ class DailyPedometer2 {
   static Future<Map> resetStepCount() async {
     final status = await _resetStepCount.invokeMethod('isDifferentDay');
     return status ?? {};
+  }
+
+  static StreamSubscription<dynamic>? get dailyStepCount {
+    _dailyStepCount =
+        _dailyStepCountChannel.receiveBroadcastStream().listen((event) {});
+    return _dailyStepCount;
+  }
+
+  static void close() {
+    _dailyStepCount?.cancel();
   }
 
   /// Returns the daily steps.
