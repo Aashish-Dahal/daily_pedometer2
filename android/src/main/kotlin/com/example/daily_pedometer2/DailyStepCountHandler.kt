@@ -58,10 +58,7 @@ class DailyStepCountHandler() : EventChannel.StreamHandler {
 
                     val isNewDay = !isSameDay(lastSavedDate, currentDate)
 
-                    val isNewPeriod = (currentDate - lastSavedDate) >= 300_000 
-
-                
-                    if (isNewDay || isNewPeriod) {
+                    if (isNewDay) {
                         // Reset initial step count for a new day
                         initialStepCount = currentStepCount
                         sharedPrefs.edit().putInt("initialStepCount", initialStepCount).apply()
