@@ -51,7 +51,28 @@ class DailyStepCountHandler() : EventChannel.StreamHandler {
             override fun onSensorChanged(event: SensorEvent?) {
                 if (event?.sensor?.type == Sensor.TYPE_STEP_COUNTER) {
                     val currentStepCount = event.values[0].toInt();
-              
+
+
+                    val currentDate = System.currentTimeMillis()
+                    val lastSavedDate = sharedPrefs.getLong("lastSavedDate", 0L)
+
+                    val isNewDay = !isSameDay(lastSavedDate, currentDate)
+
+                    val isNewPeriod = (currentDate - lastSavedDate) >= 300_000 
+
+                
+                    if (isNewDay || isNewPeriod) {
+                        // Reset initial step count for a new day
+                        initialStepCount = currentStepCount
+                        sharedPrefs.edit().putInt("initialStepCount", initialStepCount).apply()
+                        
+                        // Update the last saved date
+                        sharedPrefs.edit().putLong("lastSavedDate", currentDate).apply()
+
+                        Log.d("DailyStepCountHandler", "5-minute interval reached. Initial step count reset to: $initialStepCount")
+
+                        Log.d("DailyStepCountHandler", "New day detected. Initial step count reset to: $initialStepCount")
+                    }
                     if (initialStepCount == -1) {
                         initialStepCount = currentStepCount
                         // Save the initial step count
@@ -89,6 +110,14 @@ class DailyStepCountHandler() : EventChannel.StreamHandler {
                 savedCalendar.get(Calendar.YEAR) != currentCalendar.get(Calendar.YEAR) 
     
         }
+
+    private fun isSameDay(time1: Long, time2: Long): Boolean {
+            val calendar1 = Calendar.getInstance().apply { timeInMillis = time1 }
+            val calendar2 = Calendar.getInstance().apply { timeInMillis = time2 }
+            return calendar1.get(Calendar.YEAR) == calendar2.get(Calendar.YEAR) &&
+                   calendar1.get(Calendar.DAY_OF_YEAR) == calendar2.get(Calendar.DAY_OF_YEAR)
+        }
+
  fun resetStepCount(): Map<String, Any> {
         // Reset step count at the start of a new day
         Log.d("DailyStepCountHandler", "resetting")
