@@ -14,7 +14,6 @@ class DailyPedometer2 {
       const EventChannel('step_count');
   static const EventChannel _dailyStepCountChannel =
       const EventChannel('daily_step_count');
-  static StreamSubscription? _streamSubscription;
 
   static StreamController<PedestrianStatus> _androidPedestrianController =
       StreamController.broadcast();
@@ -73,7 +72,6 @@ class DailyPedometer2 {
       });
 
   static Future<Map> resetStepCount() async {
-    _streamSubscription?.cancel();
     final status = await _resetStepCount.invokeMethod('isDifferentDay');
     return status ?? {};
   }
@@ -81,13 +79,9 @@ class DailyPedometer2 {
   /// Returns the daily steps.
   /// Events may come with a delay.
   static Stream<DailyStepCount> get dailyStepCountStream {
-    final stream = _dailyStepCountChannel
-        .receiveBroadcastStream()
-        .map((event) => DailyStepCount._(event));
-    _streamSubscription = stream.listen((e) {
-      print("Debug ${e.dailyStepData.toJson()}");
+    return _dailyStepCountChannel.receiveBroadcastStream().map((event) {
+      return DailyStepCount._(event);
     });
-    return stream;
   }
 }
 
@@ -158,16 +152,20 @@ class PedestrianStatus {
 class StepData {
   final int dailyStepCount;
   final DateTime date;
+  final bool isNewDay;
 
-  StepData({required this.dailyStepCount, required this.date});
+  StepData(
+      {required this.dailyStepCount,
+      required this.date,
+      required this.isNewDay});
 
   factory StepData.fromJson(Map<dynamic, dynamic> json) {
     return StepData(
-      dailyStepCount: json['daily_step_count'],
-      date: json['save_date'] != null
-          ? DateTime.fromMillisecondsSinceEpoch(json['save_date'])
-          : DateTime.now(),
-    );
+        dailyStepCount: json['daily_step_count'],
+        date: json['save_date'] != null
+            ? DateTime.fromMillisecondsSinceEpoch(json['save_date'])
+            : DateTime.now(),
+        isNewDay: json["is_new_day"] ?? false);
   }
   Map<String, dynamic> toJson() =>
       {'daily_step_count': dailyStepCount, 'save_date': date};

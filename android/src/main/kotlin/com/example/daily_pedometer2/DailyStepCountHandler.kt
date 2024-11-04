@@ -85,10 +85,11 @@ class DailyStepCountHandler() : EventChannel.StreamHandler {
                   
                     // Save the updated step count
                     sharedPrefs.edit().putInt("dailyStepCount", dailyStepCount).apply();
-                    val savedDate = sharedPrefs.getLong("lastSavedDate", 0L)
+                    dailyStepCount = maxOf(currentStepCount - initialStepCount, 0)
+                    
                     val result = mapOf(
                         "daily_step_count" to dailyStepCount,
-                        "save_date" to savedDate
+                        "save_date" to lastSavedDate
                     )
                     Log.d("DailyStepCountHandler", "Saved step count: $result")
                     Log.d("DailyStepCountHandler", "Current step count: $currentStepCount, Daily step count: $dailyStepCount")
