@@ -91,7 +91,7 @@ class DailyStepCountHandler() : EventChannel.StreamHandler {
                     
                     val result = mapOf(
                         "daily_step_count" to dailyStepCount,
-                        "save_date" to lastSavedDate
+                        "save_date" to lastSavedDate,
                         "is_new_day" to isNewDayFlag
                     )
                     Log.d("DailyStepCountHandler", "Saved step count: $result")
