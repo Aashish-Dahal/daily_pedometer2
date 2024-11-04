@@ -46,6 +46,7 @@ class DailyStepCountHandler() : EventChannel.StreamHandler {
         }
     }
     private fun getDailyEventListener(events: EventChannel.EventSink): SensorEventListener? {
+        var isNewDayFlag = false
         return object : SensorEventListener {
             override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
             override fun onSensorChanged(event: SensorEvent?) {
@@ -60,6 +61,7 @@ class DailyStepCountHandler() : EventChannel.StreamHandler {
 
                     if (isNewDay) {
                         // Reset initial step count for a new day
+                        isNewDayFlag = true
                         initialStepCount = currentStepCount
                         sharedPrefs.edit().putInt("initialStepCount", initialStepCount).apply()
                         
@@ -90,11 +92,16 @@ class DailyStepCountHandler() : EventChannel.StreamHandler {
                     val result = mapOf(
                         "daily_step_count" to dailyStepCount,
                         "save_date" to lastSavedDate
+                        "is_new_day" to isNewDayFlag
                     )
                     Log.d("DailyStepCountHandler", "Saved step count: $result")
                     Log.d("DailyStepCountHandler", "Current step count: $currentStepCount, Daily step count: $dailyStepCount")
 
                     events!!.success(result)
+
+                    if (isNewDayFlag) {
+                        isNewDayFlag = false
+                    }
                 }
             }
         }

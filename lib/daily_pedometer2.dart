@@ -157,7 +157,7 @@ class StepData {
   StepData(
       {required this.dailyStepCount,
       required this.date,
-      required this.isNewDay});
+      this.isNewDay = false});
 
   factory StepData.fromJson(Map<dynamic, dynamic> json) {
     return StepData(
