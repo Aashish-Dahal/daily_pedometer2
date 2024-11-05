@@ -62,21 +62,16 @@ class DailyStepCountHandler() : EventChannel.StreamHandler {
                     if (isNewDay) {
                         // Reset initial step count for a new day
                         isNewDayFlag = true
-                        initialStepCount = currentStepCount
-                        sharedPrefs.edit().putInt("initialStepCount", initialStepCount).apply()
-                        
-                        // Update the last saved date
-                        sharedPrefs.edit().putLong("lastSavedDate", currentDate).apply()
-
-                        Log.d("DailyStepCountHandler", "5-minute interval reached. Initial step count reset to: $initialStepCount")
-
+                        initialStepCount = -1
                         Log.d("DailyStepCountHandler", "New day detected. Initial step count reset to: $initialStepCount")
                     }
                     if (initialStepCount == -1) {
                         initialStepCount = currentStepCount
                         // Save the initial step count
                         sharedPrefs.edit().putInt("initialStepCount", initialStepCount).apply()
+
                         sharedPrefs.edit().putLong("lastSavedDate", currentDate).apply()
+                        
                         Log.d("DailyStepCountHandler", "Initial step count set to: $initialStepCount")
                     }
                     
