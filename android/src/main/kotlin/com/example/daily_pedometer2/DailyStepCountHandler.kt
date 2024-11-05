@@ -76,6 +76,7 @@ class DailyStepCountHandler() : EventChannel.StreamHandler {
                         initialStepCount = currentStepCount
                         // Save the initial step count
                         sharedPrefs.edit().putInt("initialStepCount", initialStepCount).apply()
+                        sharedPrefs.edit().putLong("lastSavedDate", currentDate).apply()
                         Log.d("DailyStepCountHandler", "Initial step count set to: $initialStepCount")
                     }
                     
