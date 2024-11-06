@@ -51,6 +51,8 @@ class DailyStepCountHandler() : EventChannel.StreamHandler {
             override fun onSensorChanged(event: SensorEvent?) {
                 if (event?.sensor?.type == Sensor.TYPE_STEP_COUNTER) {
                     val currentStepCount = event.values[0].toInt();
+
+
               
                     if (initialStepCount == -1) {
                         initialStepCount = currentStepCount
@@ -70,7 +72,9 @@ class DailyStepCountHandler() : EventChannel.StreamHandler {
                     val savedDate = sharedPrefs.getLong("lastSavedDate", 0L)
                     val result = mapOf(
                         "daily_step_count" to dailyStepCount,
-                        "save_date" to savedDate
+                        "save_date" to savedDate        
+                        "total_steps" to currentStepCount
+                        "initial_steps" to initialStepCount
                     )
                     Log.d("DailyStepCountHandler", "Saved step count: $result")
                     Log.d("DailyStepCountHandler", "Current step count: $currentStepCount, Daily step count: $dailyStepCount")
