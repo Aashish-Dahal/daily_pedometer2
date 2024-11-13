@@ -51,18 +51,22 @@ class DailyStepCountHandler() : EventChannel.StreamHandler {
             override fun onSensorChanged(event: SensorEvent?) {
                 if (event?.sensor?.type == Sensor.TYPE_STEP_COUNTER) {
                     val currentStepCount = event.values[0].toInt();
+
               
                     if (initialStepCount == -1) {
                         initialStepCount = currentStepCount
                         // Save the initial step count
                         sharedPrefs.edit().putInt("initialStepCount", initialStepCount).apply()
+                        sharedPrefs.edit().putLong("lastSavedDate", System.currentTimeMillis()).apply();
+
                         Log.d("DailyStepCountHandler", "Initial step count set to: $initialStepCount")
                     }
-                    
+                   
                     if(currentStepCount >= initialStepCount){
                       dailyStepCount = currentStepCount - initialStepCount
+                      
                     }else{
-                        dailyStepCount = initialStepCount
+                        dailyStepCount = initialStepCount 
                     }
                   
                     // Save the updated step count
@@ -70,7 +74,9 @@ class DailyStepCountHandler() : EventChannel.StreamHandler {
                     val savedDate = sharedPrefs.getLong("lastSavedDate", 0L)
                     val result = mapOf(
                         "daily_step_count" to dailyStepCount,
-                        "save_date" to savedDate
+                        "save_date" to savedDate,     
+                        "total_steps" to currentStepCount,
+                        "initial_steps" to initialStepCount
                     )
                     Log.d("DailyStepCountHandler", "Saved step count: $result")
                     Log.d("DailyStepCountHandler", "Current step count: $currentStepCount, Daily step count: $dailyStepCount")
@@ -94,7 +100,6 @@ class DailyStepCountHandler() : EventChannel.StreamHandler {
         Log.d("DailyStepCountHandler", "resetting")
         dailyStepCount = 0
         initialStepCount = -1
-        sharedPrefs.edit().putLong("lastSavedDate", System.currentTimeMillis()).apply();
         Log.d("DailyStepCountHandler", "New day - dailyStepCount reset to: $dailyStepCount, initialStepCount reset to: $initialStepCount")
         val savedDate = sharedPrefs.getLong("lastSavedDate", 0L)
         val status= mapOf(

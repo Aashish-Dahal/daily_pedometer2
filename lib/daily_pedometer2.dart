@@ -158,16 +158,23 @@ class PedestrianStatus {
 class StepData {
   final int dailyStepCount;
   final DateTime date;
+  final int totalSteps;
+  final int initialSteps;
 
-  StepData({required this.dailyStepCount, required this.date});
+  StepData(
+      {required this.dailyStepCount,
+      required this.date,
+      this.totalSteps = 0,
+      this.initialSteps = 0});
 
   factory StepData.fromJson(Map<dynamic, dynamic> json) {
     return StepData(
-      dailyStepCount: json['daily_step_count'],
-      date: json['save_date'] != null
-          ? DateTime.fromMillisecondsSinceEpoch(json['save_date'])
-          : DateTime.now(),
-    );
+        dailyStepCount: json['daily_step_count'],
+        date: json['save_date'] != null
+            ? DateTime.fromMillisecondsSinceEpoch(json['save_date'])
+            : DateTime.now(),
+        totalSteps: json['total_steps'] ?? 0,
+        initialSteps: json['initial_steps'] ?? 0);
   }
   Map<String, dynamic> toJson() =>
       {'daily_step_count': dailyStepCount, 'save_date': date};
