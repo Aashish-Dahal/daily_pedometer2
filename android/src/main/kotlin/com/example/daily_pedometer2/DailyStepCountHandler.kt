@@ -46,16 +46,32 @@ class DailyStepCountHandler() : EventChannel.StreamHandler {
         }
     }
     private fun getDailyEventListener(events: EventChannel.EventSink): SensorEventListener? {
+        var isNewDayFlag = false
         return object : SensorEventListener {
             override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
             override fun onSensorChanged(event: SensorEvent?) {
                 if (event?.sensor?.type == Sensor.TYPE_STEP_COUNTER) {
                     val currentStepCount = event.values[0].toInt();
-              
+
+
+                    val currentDate = System.currentTimeMillis()
+                    val lastSavedDate = sharedPrefs.getLong("lastSavedDate", 0L)
+
+                    val isNewDay = !isSameDay(lastSavedDate, currentDate)
+
+                    if (isNewDay) {
+                        // Reset initial step count for a new day
+                        isNewDayFlag = true
+                        initialStepCount = -1
+                        Log.d("DailyStepCountHandler", "New day detected. Initial step count reset to: $initialStepCount")
+                    }
                     if (initialStepCount == -1) {
                         initialStepCount = currentStepCount
                         // Save the initial step count
                         sharedPrefs.edit().putInt("initialStepCount", initialStepCount).apply()
+
+                        sharedPrefs.edit().putLong("lastSavedDate", currentDate).apply()
+                        
                         Log.d("DailyStepCountHandler", "Initial step count set to: $initialStepCount")
                     }
                     
@@ -67,15 +83,21 @@ class DailyStepCountHandler() : EventChannel.StreamHandler {
                   
                     // Save the updated step count
                     sharedPrefs.edit().putInt("dailyStepCount", dailyStepCount).apply();
-                    val savedDate = sharedPrefs.getLong("lastSavedDate", 0L)
+                    dailyStepCount = maxOf(currentStepCount - initialStepCount, 0)
+                    
                     val result = mapOf(
                         "daily_step_count" to dailyStepCount,
-                        "save_date" to savedDate
+                        "save_date" to lastSavedDate,
+                        "is_new_day" to isNewDayFlag
                     )
                     Log.d("DailyStepCountHandler", "Saved step count: $result")
                     Log.d("DailyStepCountHandler", "Current step count: $currentStepCount, Daily step count: $dailyStepCount")
 
                     events!!.success(result)
+
+                    if (isNewDayFlag) {
+                        isNewDayFlag = false
+                    }
                 }
             }
         }
@@ -89,6 +111,14 @@ class DailyStepCountHandler() : EventChannel.StreamHandler {
                 savedCalendar.get(Calendar.YEAR) != currentCalendar.get(Calendar.YEAR) 
     
         }
+
+    private fun isSameDay(time1: Long, time2: Long): Boolean {
+            val calendar1 = Calendar.getInstance().apply { timeInMillis = time1 }
+            val calendar2 = Calendar.getInstance().apply { timeInMillis = time2 }
+            return calendar1.get(Calendar.YEAR) == calendar2.get(Calendar.YEAR) &&
+                   calendar1.get(Calendar.DAY_OF_YEAR) == calendar2.get(Calendar.DAY_OF_YEAR)
+        }
+
  fun resetStepCount(): Map<String, Any> {
         // Reset step count at the start of a new day
         Log.d("DailyStepCountHandler", "resetting")
